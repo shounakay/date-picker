@@ -30,32 +30,76 @@ export const getMonthName = (num: number) => {
   }
 };
 
-export const getCalendarDays = (currDate, currMonth) => {
+export const getCalendarDays = (date: Date) => {
+  let currDate = new Date(date.setDate(1));
+  const currMonth = date.getMonth();
   return Array.from({ length: 6 }, (_) => {
     const arr = [];
     for (let i = 0; i < DAYS.length; i++) {
       if (currDate.getDay() !== i) {
-        if (currDate.getDay() > i) {
-          const diff = Math.abs(currDate.getDay() - i);
-          const dt = new Date(currDate.setDate(currDate.getDate() - diff));
-          arr.push({
-            date: dt.getDate(),
-            class: "text-neutral-400",
-            fullDate: currDate,
-          });
-        }
+        const diff = Math.abs(currDate.getDay() - i);
+        const newDate = new Date(currDate);
+        newDate.setDate(currDate.getDate() - diff);
+        arr.push({
+          date: newDate.getDate(),
+          class: "text-neutral-400",
+          fullDate: newDate,
+        });
+        currDate.setDate(currDate.getDate() - diff);
       } else {
+        const newDate = new Date(currDate);
         arr.push({
           date: currDate.getDate(),
-          fullDate: currDate,
+          fullDate: newDate,
           ...(currDate.getMonth() !== currMonth && {
             class: "text-neutral-400",
           }),
         });
       }
       currDate = new Date(currDate.setDate(currDate.getDate() + 1));
-      //   currDate = new Date(incrementedDate.setHours(0, 0, 0, 0));
     }
     return arr;
   });
+};
+
+export const areDatesEqual = (dt1: Date, dt2: Date) => {
+  if (
+    dt1.getFullYear() === dt2.getFullYear() &&
+    dt1.getMonth() === dt2.getMonth() &&
+    dt1.getDate() === dt2.getDate()
+  ) {
+    return true;
+  }
+  return false;
+};
+
+export const getDateStyles = (
+  style: string,
+  fullDate: Date,
+  handleTheme: (dt: Date) => void
+) =>
+  `${style} w-5 text-center ${handleTheme(fullDate)} ${
+    ![0, 6].includes(fullDate.getDay())
+      ? "cursor-pointer"
+      : "cursor-not-allowed"
+  } ${
+    areDatesEqual(fullDate, new Date())
+      ? "border-2 rounded-md border-blue-500"
+      : ""
+  }`;
+
+export const getWeekendDates = (startDate: Date, endDate: Date) => {
+  const weekendDates = [];
+
+  // Iterate through each day between startDate and endDate
+  const currentDate = new Date(startDate);
+  while (currentDate <= endDate) {
+    const dayOfWeek = currentDate.getDay();
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      weekendDates.push(new Date(currentDate).toLocaleDateString());
+    }
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return weekendDates;
 };
