@@ -15,7 +15,12 @@ export const DateRangePicker = ({
   endDate,
   onDateSelection,
   onLastDaysSelection,
-}: any) => {
+}: {
+  startDate: Date;
+  endDate: Date;
+  onDateSelection: (dt: Date) => void;
+  onLastDaysSelection: (days: number) => void;
+}) => {
   const [date, setDate] = useState(new Date());
   const [isPickYear, setIsPickYear] = useState(false);
 
