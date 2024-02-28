@@ -16,8 +16,8 @@ export const DateRangePicker = ({
   onDateSelection,
   onLastDaysSelection,
 }: {
-  startDate: Date;
-  endDate: Date;
+  startDate?: Date;
+  endDate?: Date | null;
   onDateSelection: (dt: Date) => void;
   onLastDaysSelection: (days: number) => void;
 }) => {
